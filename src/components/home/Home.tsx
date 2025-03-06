@@ -117,16 +117,23 @@ const Comment = ({ item, isEdit, setIsEdit, handleDelete, newBody, setNewBody }:
   //編集したいidとCommentsの配列の要素のidが一緒だった時isEditModeをtrueにする
   const isEditMode = isEdit && item.id === isEdit.id;
   return (
+    //isEditModeがtrueの時
     <>
       {isEditMode ? (
+        //SEditInputのtextareaタグに代わってその中のvalueにstringが入る
+        //onChangeで変更した値をnewBodyにセットする
         <>
           <SEditInput value={newBody} onChange={(e) => setNewBody(e.target.value)} rows={10} cols={40}>
             {/* <DeleteButton onClick={() => handleDelete(c.id)}>削除</DeleteButton> */}
           </SEditInput>
-          <EditButton onClick={() => setIsEdit(null)}>{'やめる'}</EditButton>
+          <SEditButton onClick={() => setIsEdit(null)}>{'やめる'}</SEditButton>
         </>
       ) : (
-        <CommentList>
+        //isEditModeがfalseの時(編集ボタンを押してない時)
+        //CommentListElementの内側にcomments配列の要素のinputValueと編集ボタンと削除ボタンを表示する
+        //isEditModeを切り替えるために編集ボタンを押したときにisEditにcomments配列の要素itemをセットしてisEditModeをtrueにする
+        //comments配列の要素item
+        <CommentListElement>
           <p>{item.inputValue}</p>
           <EditButton
             onClick={() => {
@@ -137,7 +144,7 @@ const Comment = ({ item, isEdit, setIsEdit, handleDelete, newBody, setNewBody }:
             {'編集'}
           </EditButton>
           <DeleteButton onClick={() => handleDelete(item.id)}>削除</DeleteButton>
-        </CommentList>
+        </CommentListElement>
       )}
     </>
   );
@@ -187,7 +194,7 @@ const AddComment = styled.button`
     transition: 0.2s;
   }
 `;
-const CommentList = styled.div`
+const CommentListElement = styled.div`
   border: 1px solid #000;
   background: #fff;
   width: 80%;
@@ -247,5 +254,23 @@ const SEditInput = styled.textarea`
   position: relative;
   bottom: 20%;
   border: 2px solid #000;
+`;
+const SEditButton = styled.textarea`
+width: 3%;
+height: 3%;
+font-size: 7px;
+position: relative;
+left: 85%;
+bottom: 25%;
+border: 0.5px solid #9ea1a3;
+background: #c0c6c9;
+color: #000;
+border-radius: 5px;
+cursor: pointer;
+&:hover {
+    background: #7b7c7d;
+    color: #fff;
+    transition: 0.2s;
+    font-weight: bold;
 `;
 export default Home;
