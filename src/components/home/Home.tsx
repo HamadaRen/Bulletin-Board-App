@@ -126,7 +126,7 @@ const Comment = ({ item, isEdit, setIsEdit, handleDelete, newBody, setNewBody }:
           <SEditInput value={newBody} onChange={(e) => setNewBody(e.target.value)} rows={10} cols={40}>
             {/* <DeleteButton onClick={() => handleDelete(c.id)}>削除</DeleteButton> */}
           </SEditInput>
-          <SEditButton onClick={() => setIsEdit(null)}>{'やめる'}</SEditButton>
+          <SEditButton onClick={() => setIsEdit(null)}>{'確定'}</SEditButton>
         </>
       ) : (
         //isEditModeがfalseの時(編集ボタンを押してない時)
