@@ -10,13 +10,13 @@ type Comment = {
 export const Home = () => {
   const [inputValue, setInputValue] = useState('');
   const [comments, setComments] = useState<Comment[]>([]);
-  const [edit, setEdit] = useState<string>('編集');
+  // const [edit, setEdit] = useState<string>('編集');
   const [isEdit, setIsEdit] = useState<Comment | null>(null);
-
   const [newBody, setNewBody] = useState<string>('');
 
   const handleChange = (event: { target: { value: SetStateAction<string> } }) => {
     setInputValue(event.target.value);
+    console.log('aaa', event.target.value);
   };
 
   const handleClick = (event: { preventDefault: () => void }) => {
@@ -40,28 +40,8 @@ export const Home = () => {
     setComments(newCommentList);
   };
 
-  const handleEdit = (id: number, inputValue: string) => {
-    {
-      edit === '編集' ? setEdit('確定') : setEdit('編集');
-    }
-    if (edit === '確定') {
-      if (inputValue === '') {
-        return alert('コメントが入力されていません');
-      }
-      const newCommentList = comments.map((comment) => {
-        if (comment.id === id) {
-          comment.inputValue = inputValue;
-        }
-        console.log('ccc', inputValue);
-        return comment;
-      });
-      setInputValue('');
-      setComments(newCommentList);
-      let textareaForm = document.getElementById('form')! as HTMLInputElement;
-      textareaForm.value = '';
-    }
-  };
-  console.log('aaa', comments);
+
+  console.log('bbb', comments);
 
   return (
     <Container>
@@ -75,6 +55,8 @@ export const Home = () => {
             handleDelete={handleDelete}
             newBody={newBody}
             setNewBody={setNewBody}
+            setComments={setComments}
+            comments={comments}
           />
           // <CommentList key={c.id}>
           //   <p>{c.inputValue}</p>
@@ -112,31 +94,87 @@ type CommentProps = {
   handleDelete: (id: number) => void;
   newBody: string;
   setNewBody: React.Dispatch<SetStateAction<string>>;
+  setComments: React.Dispatch<SetStateAction<Comment[]>>;
+  comments: Comment[];
 };
-const Comment = ({ item, isEdit, setIsEdit, handleDelete, newBody, setNewBody }: CommentProps) => {
+const Comment = ({
+  item,
+  isEdit,
+  setIsEdit,
+  handleDelete,
+  newBody,
+  setNewBody,
+  setComments,
+  comments,
+}: CommentProps) => {
   //編集したいidとCommentsの配列の要素のidが一緒だった時isEditModeをtrueにする
   const isEditMode = isEdit && item.id === isEdit.id;
+
+  //findでcommentsの配列からidの同じ要素をとってくる
+  //どのstateにidが入っているものがあるかはconsole.logして見つける
+  //編集したい要素のidとcommentsの中にあるidが同じものを取り出して定数にいれる
+  //取り出したidとinputValueが入っている要素のinputValueに編集してsetした値を代入する
+  const handleSave = () => {
+    if (!isEdit) {
+      return;
+    }
+    // const newComment = comments.find((element) => element.id === isEdit.id);
+    // if (!newComment) return;
+    // newComment.inputValue = newBody;
+
+    // const newArray = comments.filter((c) => c.id !== isEdit.id);
+    // setComments([...newArray, newComment]);
+
+    const newArray = comments.map((c) => {
+      if (c.id === isEdit.id) {
+        c.inputValue = newBody;
+        return c;
+      }
+      return c;
+    });
+
+    setComments(newArray);
+
+    // console.log('xxx', comId);
+  };
+
   return (
     //isEditModeがtrueの時
     <>
       {isEditMode ? (
         //SEditInputのtextareaタグに代わってその中のvalueにstringが入る
         //onChangeで変更した値をnewBodyにセットする
+        //setIsEditでisEditModeの切り替え、確定ボタンを押したらisEditModeはfalseになる
         <>
           <SEditInput value={newBody} onChange={(e) => setNewBody(e.target.value)} rows={10} cols={40}>
             {/* <DeleteButton onClick={() => handleDelete(c.id)}>削除</DeleteButton> */}
           </SEditInput>
-          <SEditButton onClick={() => setIsEdit(null)}>{'確定'}</SEditButton>
+          <SEditButton
+            onClick={() => {
+              setIsEdit(null);
+              handleSave();
+            }}
+          >
+            {'確定'}
+          </SEditButton>
+          {console.log('ccc', newBody)}
+          {console.log('@@@', isEdit)}
         </>
       ) : (
         //isEditModeがfalseの時(編集ボタンを押してない時)
         //CommentListElementの内側にcomments配列の要素のinputValueと編集ボタンと削除ボタンを表示する
         //isEditModeを切り替えるために編集ボタンを押したときにisEditにcomments配列の要素itemをセットしてisEditModeをtrueにする
-        //comments配列の要素item
+        //comments配列の要素itemのinputValueが変更されていないのにinputValueをセットしているから変更が反映されない
         <CommentListElement>
           <p>{item.inputValue}</p>
           <EditButton
             onClick={() => {
+              {
+                console.log('zzz', item.inputValue);
+              }
+              {
+                console.log('yyy', item.inputValue);
+              }
               setIsEdit(item);
               setNewBody(item.inputValue);
             }}
@@ -255,9 +293,9 @@ const SEditInput = styled.textarea`
   bottom: 20%;
   border: 2px solid #000;
 `;
-const SEditButton = styled.textarea`
-width: 3%;
-height: 3%;
+const SEditButton = styled.button`
+width: 4.5%;
+height: 4%;
 font-size: 7px;
 position: relative;
 left: 85%;
