@@ -1,7 +1,7 @@
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { idText } from 'typescript';
-import {Comment} from './Comment'
+import { Comment } from './Comment';
+import axios from 'axios';
 
 type Comment = {
   id: number;
@@ -41,8 +41,18 @@ export const Home = () => {
     setComments(newCommentList);
   };
 
-
   console.log('bbb', comments);
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3000')
+      .then((response) => {
+        console.log(response.data.message);
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
+  }, []);
 
   return (
     <Container>
@@ -57,23 +67,9 @@ export const Home = () => {
             newBody={newBody}
             setNewBody={setNewBody}
             setComments={setComments}
-            comments={comments} id={0}          />
-          // <CommentList key={c.id}>
-          //   <p>{c.inputValue}</p>
-          //   {isEdit.id === c.id ? (
-          //     <form>
-          //       <textarea rows={10} cols={40}>
-          //         <EditButton onClick={() => handleEdit(c.id, inputValue)}>{edit}</EditButton>
-          //         <DeleteButton onClick={() => handleDelete(c.id)}>削除</DeleteButton>
-          //       </textarea>
-          //     </form>
-          //   ) : (
-          //     <>
-          //       <EditButton onClick={() => handleEdit(c.id, inputValue)}>{edit}</EditButton>
-          //       <DeleteButton onClick={() => handleDelete(c.id)}>削除</DeleteButton>
-          //     </>
-          //   )}
-          // </CommentList>
+            comments={comments}
+            id={0}
+          />
         ))}
       <InputText
         id="form"
@@ -86,8 +82,6 @@ export const Home = () => {
     </Container>
   );
 };
-
-
 
 const Container = styled.div`
   width: 75%;

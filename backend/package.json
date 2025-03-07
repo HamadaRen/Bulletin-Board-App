@@ -11,9 +11,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.21.2"
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mysql2": "^3.13.0",
+    "uid": "^2.0.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "github:types/express",
     "nodemon": "^3.1.9"
   }
