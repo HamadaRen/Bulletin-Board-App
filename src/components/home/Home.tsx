@@ -7,6 +7,10 @@ type Comment = {
   id: number;
   inputValue: string;
 };
+// type AddInputValueType = {
+//   commentInputValue: string;
+//   editTodoName: string;
+// }
 
 export const Home = () => {
   const [inputValue, setInputValue] = useState('');
@@ -17,58 +21,97 @@ export const Home = () => {
 
   const handleChange = (event: { target: { value: SetStateAction<string> } }) => {
     setInputValue(event.target.value);
-    console.log('aaa', event.target.value);
   };
 
-  const handleClick = (event: { preventDefault: () => void }) => {
-    if (inputValue === '') {
+  const getInputValues = async () => {
+    try{
+      const response = await fetch("http://localhost:3001/");
+      console.log('getレスポンス', response);
+      const data = await response.json();
+      console.log('aaa', data) //コンソールした
+      setComments(data);
+      console.log('bbb', comments) //コンソールしたした
+    } catch(error) {
+      console.error('エラー', error)
+    }
+  }
+
+  useEffect(() => {
+    getInputValues()
+  }, [])
+
+
+  //ポストを押したときに走る処理
+  const handleClick = async () => {
+    if (inputValue === "") {
       alert('コメントを入力してください');
       return;
     }
-    event.preventDefault();
+    // const { inputValue } = event;
+    //入力欄に書いていた内容がinputValue
+    await axios
+    .post("http://localhost:3001/add", {data: { inputValue }})
+    .then((response) => {
+      console.log('ccc',response);
+      const comment = response.data;
+      setComments((preComments => [comment, ...preComments]))
+    })
+    .catch((response) => {
+      console.log('エラー！', response);
+    })
+
+    //書いてたテキストエリアの内容をテキストエリアから消す処理
     let textareaForm = document.getElementById('form')! as HTMLInputElement;
     textareaForm.value = '';
-    const newComments: Comment = {
+    const newComments = {
       id: Date.now(),
       inputValue: inputValue,
     };
     setComments([...comments, newComments]);
     setInputValue('');
+    console.log('fff', comments)
   };
 
-  const handleDelete = (id: number) => {
-    const newCommentList = comments.filter((value) => value.id !== id);
-    setComments(newCommentList);
+  const handleDelete = async (id: number) => {
+    console.log(id)
+    
+    await axios
+    .delete("http://localhost:3001/delete", {data: {id}})
+    .then((response) => {
+      const newCommentList = comments.filter((value) => value.id !== id);
+      setComments(newCommentList);
+    })
   };
-
-  console.log('bbb', comments);
-
+  
+  
+  
+  
   useEffect(() => {
     axios
-      .get('http://localhost:3000')
-      .then((response) => {
-        console.log(response.data.message);
-      })
-      .catch((e) => {
-        console.log(e.message);
-      });
+    .get('http://localhost:3001')
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((e) => {
+      console.log(e.message);
+    });
   }, []);
-
+  
   return (
     <Container>
       {comments.length > 0 &&
         comments.map((c) => (
           <Comment
-            key={c.id}
-            item={c}
-            isEdit={isEdit}
-            setIsEdit={setIsEdit}
-            handleDelete={handleDelete}
-            newBody={newBody}
-            setNewBody={setNewBody}
-            setComments={setComments}
-            comments={comments}
-            id={0}
+          key={c.id}
+          item={c}
+          isEdit={isEdit}
+          setIsEdit={setIsEdit}
+          handleDelete={handleDelete}
+          newBody={newBody}
+          setNewBody={setNewBody}
+          setComments={setComments}
+          comments={comments}
+          id={0}
           />
         ))}
       <InputText
@@ -77,7 +120,7 @@ export const Home = () => {
         cols={40}
         placeholder="コメントを入力して下さい"
         onChange={handleChange}
-      ></InputText>
+        ></InputText>
       <AddComment onClick={handleClick}>ポスト</AddComment>
     </Container>
   );

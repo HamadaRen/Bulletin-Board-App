@@ -1,10 +1,15 @@
-import { SetStateAction } from "react";
+import axios from 'axios';
+import { SetStateAction } from 'react';
 import styled from 'styled-components';
 
 type Comment = {
   id: number;
   inputValue: string;
 };
+// type AddInputValueType = {
+//   inputValue: string;
+//   editCommentName: string;
+// };
 
 type CommentProps = {
   id: number;
@@ -17,7 +22,6 @@ type CommentProps = {
   setComments: React.Dispatch<SetStateAction<Comment[]>>;
   comments: Comment[];
 };
-
 
 export const Comment = ({
   id,
@@ -37,29 +41,26 @@ export const Comment = ({
   //どのstateにidが入っているものがあるかはconsole.logして見つける
   //編集したい要素のidとcommentsの中にあるidが同じものを取り出して定数にいれる
   //取り出したidとinputValueが入っている要素のinputValueに編集してsetした値を代入する
-  const handleSave = () => {
+  const handleSave = async () => {
+    const editCommentName: string = 'a'
     if (!isEdit) {
       return;
     }
-    // const newComment = comments.find((element) => element.id === isEdit.id);
-    // if (!newComment) return;
-    // newComment.inputValue = newBody;
-
-    // const newArray = comments.filter((c) => c.id !== isEdit.id);
-    // setComments([...newArray, newComment]);
-
-    const newArray = comments.map((c) => {
-      if (c.id === isEdit.id) {
-        c.inputValue = newBody;
-        return c;
-      }
-      return c;
-    });
-
-    setComments(newArray);
-
-    // console.log('xxx', comId);
-  };
+    await axios
+      .put('http://localhost:3001/update', { data: { id: isEdit.id, inputValue: editCommentName } })
+      .then((response) => {
+        console.log(response.data);
+        const newArray = comments.map((c) => {
+          if (c.id === isEdit.id) {
+            c.inputValue = newBody;
+            return c;
+          }
+          return c;
+        });
+        setComments(newArray);
+        setIsEdit(null);
+            });
+    };
 
   return (
     //isEditModeがtrueの時
@@ -92,12 +93,6 @@ export const Comment = ({
           <p>{item.inputValue}</p>
           <EditButton
             onClick={() => {
-              {
-                console.log('zzz', item.inputValue);
-              }
-              {
-                console.log('yyy', item.inputValue);
-              }
               setIsEdit(item);
               setNewBody(item.inputValue);
             }}
@@ -190,3 +185,4 @@ cursor: pointer;
     transition: 0.2s;
     font-weight: bold;
 `;
+export default Comment;
