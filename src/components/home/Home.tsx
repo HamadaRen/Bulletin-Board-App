@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Comment } from './Comment';
 import axios from 'axios';
 
-type Comment = {
-  id: number;
+type CommentType = {
+  id: string;
   inputValue: string;
 };
 // type AddInputValueType = {
@@ -14,114 +14,128 @@ type Comment = {
 
 export const Home = () => {
   const [inputValue, setInputValue] = useState('');
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
   // const [edit, setEdit] = useState<string>('編集');
-  const [isEdit, setIsEdit] = useState<Comment | null>(null);
+  const [isEdit, setIsEdit] = useState<CommentType | null>(null);
   const [newBody, setNewBody] = useState<string>('');
 
-  const handleChange = (event: { target: { value: SetStateAction<string> } }) => {
-    setInputValue(event.target.value);
-  };
+  // const handleChange = (event: { target: { value: SetStateAction<string> } }) => {
+  //   setInputValue(event.target.value);
+  // };
 
   const getInputValues = async () => {
-    try{
-      const response = await fetch("http://localhost:3001/");
-      console.log('getレスポンス', response);
+    try {
+      const response = await fetch('http://localhost:3001/');
       const data = await response.json();
-      console.log('aaa', data) //コンソールした
-      setComments(data);
-      console.log('bbb', comments) //コンソールしたした
-    } catch(error) {
-      console.error('エラー', error)
+      setComments(data.comments);
+      // console.log('data', data); //コンソールした
+      // console.log('data.com', data.comments); //コンソールした
+    } catch (error) {
+      console.error('エラー', error);
     }
-  }
+  };
+  // console.log('bbb', comments); //コンソールした
 
-  useEffect(() => {
-    getInputValues()
-  }, [])
-
+  // useEffect(() => {
+  //   getInputValues();
+  // }, []);
 
   //ポストを押したときに走る処理
-  const handleClick = async () => {
-    if (inputValue === "") {
+  const handleClick = async (inputValue: string) => {
+    if (inputValue === '') {
       alert('コメントを入力してください');
       return;
     }
     // const { inputValue } = event;
     //入力欄に書いていた内容がinputValue
-    await axios
-    .post("http://localhost:3001/add", {data: { inputValue }})
-    .then((response) => {
-      console.log('ccc',response);
-      const comment = response.data;
-      setComments((preComments => [comment, ...preComments]))
+    await axios.put('http://localhost:3001/add', { data: {inputValue}}).then((response) => {
+      const newInputArray: CommentType[]  = 
+      setComments(newInputArray)
     })
-    .catch((response) => {
-      console.log('エラー！', response);
-    })
+    console.log('aaaaa')
 
+    .then((response) => {
+
+    })
+    // , {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ inputValue }),
+    // }
+    // const data = await response
+    
+    // .then((response) => {
+    //   const comment = response;
+    //   setComments([...comments]);
+    //   console.log('ccc', comment); //コンソールした
+    // })
+    // .catch((response) => {
+    //   console.log('エラー！', response);
+    // });
+    
     //書いてたテキストエリアの内容をテキストエリアから消す処理
     let textareaForm = document.getElementById('form')! as HTMLInputElement;
     textareaForm.value = '';
-    const newComments = {
-      id: Date.now(),
-      inputValue: inputValue,
-    };
-    setComments([...comments, newComments]);
     setInputValue('');
-    console.log('fff', comments)
+    console.log('fff', comments);
   };
-
-  const handleDelete = async (id: number) => {
-    console.log(id)
+  
+  //デリート処理
+  const handleDelete = async (id: string) => {
     
-    await axios
-    .delete("http://localhost:3001/delete", {data: {id}})
-    .then((response) => {
+    await axios.delete('http://localhost:3001/delete', { data: { id } }).then((response) => {
       const newCommentList = comments.filter((value) => value.id !== id);
       setComments(newCommentList);
-    })
-  };
-  
-  
-  
-  
-  useEffect(() => {
-    axios
-    .get('http://localhost:3001')
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((e) => {
-      console.log(e.message);
     });
+  };
+
+  useEffect(() => {
+    getInputValues();
+    // axios
+    //   .get('http://localhost:3001')
+    //   .then((response) => {
+    //     if (response.statusText !== 'OK') {
+    //       throw new Error('通信失敗');
+    //     }
+
+    //     getInputValues();
+    //   })
+    //   .catch((e) => {
+    //     console.log(e.message);
+    //   });
   }, []);
-  
+
+  // console.log('sss', comments);
   return (
     <Container>
       {comments.length > 0 &&
         comments.map((c) => (
           <Comment
-          key={c.id}
-          item={c}
-          isEdit={isEdit}
-          setIsEdit={setIsEdit}
-          handleDelete={handleDelete}
-          newBody={newBody}
-          setNewBody={setNewBody}
-          setComments={setComments}
-          comments={comments}
-          id={0}
+            key={c.id}
+            item={c}
+            isEdit={isEdit}
+            setIsEdit={setIsEdit}
+            handleDelete={handleDelete}
+            newBody={newBody}
+            setNewBody={setNewBody}
+            setComments={setComments}
+            comments={comments}
+            id={c.id}
           />
         ))}
+      {/* : (
+        <>@</>
+      )} */}
       <InputText
         id="form"
         rows={10}
         cols={40}
         placeholder="コメントを入力して下さい"
-        onChange={handleChange}
-        ></InputText>
-      <AddComment onClick={handleClick}>ポスト</AddComment>
+        // onChange={handleChange}
+      ></InputText>
+      <AddCommentButton onClick={handleClick}>ポスト</AddCommentButton>
     </Container>
   );
 };
@@ -150,7 +164,7 @@ const InputText = styled.textarea`
   background: #fff;
   position: fixed;
 `;
-const AddComment = styled.button`
+const AddCommentButton = styled.button`
   width: 10%;
   height: 9%;
   cursor: pointer;

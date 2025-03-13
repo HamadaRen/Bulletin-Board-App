@@ -3,7 +3,7 @@ import { SetStateAction } from 'react';
 import styled from 'styled-components';
 
 type Comment = {
-  id: number;
+  id: string;
   inputValue: string;
 };
 // type AddInputValueType = {
@@ -12,11 +12,11 @@ type Comment = {
 // };
 
 type CommentProps = {
-  id: number;
+  id: string;
   item: Comment;
   isEdit: Comment | null;
   setIsEdit: React.Dispatch<SetStateAction<Comment | null>>;
-  handleDelete: (id: number) => void;
+  handleDelete: (id: string) => void;
   newBody: string;
   setNewBody: React.Dispatch<SetStateAction<string>>;
   setComments: React.Dispatch<SetStateAction<Comment[]>>;
@@ -81,8 +81,6 @@ export const Comment = ({
           >
             {'確定'}
           </SEditButton>
-          {console.log('ccc', newBody)}
-          {console.log('@@@', isEdit)}
         </>
       ) : (
         //isEditModeがfalseの時(編集ボタンを押してない時)
@@ -95,8 +93,7 @@ export const Comment = ({
             onClick={() => {
               setIsEdit(item);
               setNewBody(item.inputValue);
-            }}
-          >
+            }}>
             {'編集'}
           </EditButton>
           <DeleteButton onClick={() => handleDelete(item.id)}>削除</DeleteButton>
