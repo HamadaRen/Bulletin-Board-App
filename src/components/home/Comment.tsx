@@ -90,8 +90,10 @@ export const Comment = ({
         //CommentListElementの内側にcomments配列の要素のinputValueと編集ボタンと削除ボタンを表示する
         //isEditModeを切り替えるために編集ボタンを押したときにisEditにcomments配列の要素itemをセットしてisEditModeをtrueにする
         //comments配列の要素itemのinputValueが変更されていないのにinputValueをセットしているから変更が反映されない
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', position: "relative" }}>
         <CommentListElement>
           <p>{item.inputValue}</p>
+        </CommentListElement>
           <EditButton
             onClick={() => {
               setIsEdit(item);
@@ -101,7 +103,7 @@ export const Comment = ({
             {'編集'}
           </EditButton>
           <DeleteButton onClick={() => handleDelete(item.id)}>削除</DeleteButton>
-        </CommentListElement>
+        </div>
       )}
     </>
   );
@@ -127,7 +129,7 @@ const DeleteButton = styled.button`
   font-size: 7px;
   position: absolute;
   bottom: 0.1rem;
-  right: 0.5rem;
+  right: 11.5%;
   border: 1.4px solid #ba2636;
   background: #f2a0a1;
   color: #a22041;
@@ -148,7 +150,7 @@ const EditButton = styled.button`
   font-size: 7px;
   position: absolute;
   bottom: 0.1rem;
-  right: 3.5rem;
+  right: 20%;
   border: 1.4px solid #7b7c7d;
   background: #c0c6c9;
   color: #000;
@@ -180,7 +182,7 @@ const SEditButton = styled.button`
   font-size: 7px;
   position: absolute;
   bottom: 10%;
-  right: 7rem;
+  right: 11%;
   border: 0.5px solid #9ea1a3;
   background: #c0c6c9;
   color: #000;
