@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Comment } from './Comment';
 import axios from 'axios';
@@ -18,6 +18,17 @@ export const Home = () => {
   // const [edit, setEdit] = useState<string>('編集');
   const [isEdit, setIsEdit] = useState<CommentType | null>(null);
   const [newBody, setNewBody] = useState<string>('');
+
+  //useRefのhooks作成
+    const endOfPostsRef = useRef<HTMLDivElement | null>(null);
+
+    //useRefの関数の発火のためのuseEffect
+    useEffect(() => {
+      if (endOfPostsRef.current) {
+        endOfPostsRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, [comments])
+  
 
   const handleChange = (event: { target: { value: SetStateAction<string> } }) => {
     setInputValue(event.target.value);
@@ -111,25 +122,57 @@ export const Home = () => {
   // console.log('sss', comments);
   return (
     <Container>
-      {comments.length > 0 &&
-        comments.map((c) => (
-          <Comment
-            key={c.id}
-            item={c}
-            isEdit={isEdit}
-            setIsEdit={setIsEdit}
-            handleDelete={handleDelete}
-            newBody={newBody}
-            setNewBody={setNewBody}
-            setComments={setComments}
-            comments={comments}
-            id={c.id}
-            getInputValues={getInputValues}
-          />
-        ))}
-      {/* : (
-        <>@</>
-      )} */}
+      {comments.length > 0 && (
+        <>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              width: '100%',
+              minHeight: 'calc(99.4vh - 16%)',
+              maxHeight: 'calc(99.4vh - 16%)',
+              position: 'absolute',
+              top: 0,
+              overflowX: 'hidden',
+              overflowY: 'auto',
+              gap: '0.5rem',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                width: '100%',
+                position: 'absolute',
+                top: 0,
+                gap: '0.5rem',
+                padding: '1rem',
+              }}
+            >
+              {comments.map((c) => (
+                <Comment
+                  key={c.id}
+                  item={c}
+                  isEdit={isEdit}
+                  setIsEdit={setIsEdit}
+                  handleDelete={handleDelete}
+                  newBody={newBody}
+                  setNewBody={setNewBody}
+                  setComments={setComments}
+                  comments={comments}
+                  id={c.id}
+                  getInputValues={getInputValues}
+                />
+              ))}
+              <div ref={endOfPostsRef}></div>
+            </div>
+          </div>
+        </>
+      )}
       <InputText
         id="form"
         rows={10}
@@ -147,12 +190,14 @@ const Container = styled.div`
   height: 99.4vh;
   border: 2px solid gray;
   background: #ddd;
-  margin-left: auto;
-  margin-right: auto;
+  align-items: center;
+  // margin-left: auto;
+  // margin-right: auto;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden;
   justify-content: flex-end;
+  position: relative;
 `;
 const InputText = styled.textarea`
   width: 50%;
@@ -164,7 +209,7 @@ const InputText = styled.textarea`
   left: 18%;
   border-radius: 10px;
   background: #fff;
-  position: fixed;
+  // position: fixed;
 `;
 const AddCommentButton = styled.button`
   width: 10%;
@@ -179,7 +224,7 @@ const AddCommentButton = styled.button`
   font-size: 5%;
   font-weight: bold;
   margin: 0 3%;
-  position: fixed;
+  // position: fixed;
   &:hover {
     background: #5a79ba;
     color: #fff;

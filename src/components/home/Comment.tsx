@@ -21,7 +21,7 @@ type CommentProps = {
   setNewBody: React.Dispatch<SetStateAction<string>>;
   setComments: React.Dispatch<SetStateAction<Comment[]>>;
   comments: Comment[];
-  getInputValues: () => Promise<void>
+  getInputValues: () => Promise<void>;
 };
 
 export const Comment = ({
@@ -60,10 +60,10 @@ export const Comment = ({
         //   return c;
         // });
         // setComments(newArray);
-        getInputValues()
+        getInputValues();
         setIsEdit(null);
-            });
-    };
+      });
+  };
 
   return (
     //isEditModeがtrueの時
@@ -72,7 +72,7 @@ export const Comment = ({
         //SEditInputのtextareaタグに代わってその中のvalueにstringが入る
         //onChangeで変更した値をnewBodyにセットする
         //setIsEditでisEditModeの切り替え、確定ボタンを押したらisEditModeはfalseになる
-        <>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', position: "relative" }}>
           <SEditInput value={newBody} onChange={(e) => setNewBody(e.target.value)} rows={10} cols={40}>
             {/* <DeleteButton onClick={() => handleDelete(c.id)}>削除</DeleteButton> */}
           </SEditInput>
@@ -84,7 +84,7 @@ export const Comment = ({
           >
             {'確定'}
           </SEditButton>
-        </>
+        </div>
       ) : (
         //isEditModeがfalseの時(編集ボタンを押してない時)
         //CommentListElementの内側にcomments配列の要素のinputValueと編集ボタンと削除ボタンを表示する
@@ -96,7 +96,8 @@ export const Comment = ({
             onClick={() => {
               setIsEdit(item);
               setNewBody(item.inputValue);
-            }}>
+            }}
+          >
             {'編集'}
           </EditButton>
           <DeleteButton onClick={() => handleDelete(item.id)}>削除</DeleteButton>
@@ -110,51 +111,55 @@ const CommentListElement = styled.div`
   border: 1px solid #000;
   background: #fff;
   width: 80%;
-  height: 20%;
+  height: 5rem;
   border-radius: 7px;
   font-size: 75%;
-  margin: 3px auto;
+  /* margin: 3px auto; */
   position: relative;
-  bottom: 20%;
+  /* bottom: 20%; */
   border: 2px solid #000;
+  overflow-y: auto;
+  white-space: pre-wrap;
 `;
 const DeleteButton = styled.button`
-width: 5%;
-height: 20%;
-font-size: 7px;
-position: relative;
-left: 89%;
-top: 45%;
-border: 1.4px solid #ba2636;
-background: #f2a0a1;
-color: #a22041;
-font-weight: bold;
-border-radius: 5px;
-cursor: pointer;
-&:hover {
+  width: 2.5rem;
+  height: 1rem;
+  font-size: 7px;
+  position: absolute;
+  bottom: 0.1rem;
+  right: 0.5rem;
+  border: 1.4px solid #ba2636;
+  background: #f2a0a1;
+  color: #a22041;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
     background: #ba2636;
     color: #fff;
     font-weight: bold;
     transition: 0.3s;
     font-weight: bold;
+  }
 `;
 const EditButton = styled.button`
-width: 5%;
-height: 20%;
-font-size: 7px;
-position: relative;
-left: 89%;
-top: 45%;
-border: 1.4px solid #7b7c7d;
-background: #c0c6c9;
-color: #000;
-border-radius: 5px;
-cursor: pointer;
-&:hover {
+  width: 2.5rem;
+  height: 1rem;
+  font-size: 7px;
+  position: absolute;
+  bottom: 0.1rem;
+  right: 3.5rem;
+  border: 1.4px solid #7b7c7d;
+  background: #c0c6c9;
+  color: #000;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
     background: #7b7c7d;
     color: #fff;
     transition: 0.3s;
     font-weight: bold;
+  }
 `;
 
 const SEditInput = styled.textarea`
@@ -170,21 +175,22 @@ const SEditInput = styled.textarea`
   border: 2px solid #000;
 `;
 const SEditButton = styled.button`
-width: 4.5%;
-height: 4%;
-font-size: 7px;
-position: relative;
-left: 85%;
-bottom: 25%;
-border: 0.5px solid #9ea1a3;
-background: #c0c6c9;
-color: #000;
-border-radius: 5px;
-cursor: pointer;
-&:hover {
+  width: 2.5rem;
+  height: 1rem;
+  font-size: 7px;
+  position: absolute;
+  bottom: 10%;
+  right: 7rem;
+  border: 0.5px solid #9ea1a3;
+  background: #c0c6c9;
+  color: #000;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
     background: #7b7c7d;
     color: #fff;
     transition: 0.3s;
     font-weight: bold;
+  }
 `;
 export default Comment;
