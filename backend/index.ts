@@ -40,22 +40,22 @@ type RequestBody = {
 //query文を書かないとデータベースに登録されない
 app.post('/add', (req: Request, res: Response) => {
   console.log('postリクエストを受け付けました');
-
+  
   if (req.body === null) {
     return;
   }
   // const inputValue = JSON.parse(req.body);
   const requestBody: any = req.body;
   const uidValue = uid(5);
-  const inputValue = requestBody.inputValue as string;
-
+  const inputValue = requestBody.data;
+  
   const insertQuery = 'INSERT INTO comment (id, inputValue) VALUES (?, ?)';
   connection.query(insertQuery, [uidValue, inputValue], (error: string, result: string) => {
     if (error) {
       console.error(error);
       return res.status(500).json({ error: 'comment!!の追加に失敗しました' });
     }
-    res.status(200).json(result);
+    res.status(200).json({ comment: result });
   });
 });
 

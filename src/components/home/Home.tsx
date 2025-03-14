@@ -19,9 +19,9 @@ export const Home = () => {
   const [isEdit, setIsEdit] = useState<CommentType | null>(null);
   const [newBody, setNewBody] = useState<string>('');
 
-  // const handleChange = (event: { target: { value: SetStateAction<string> } }) => {
-  //   setInputValue(event.target.value);
-  // };
+  const handleChange = (event: { target: { value: SetStateAction<string> } }) => {
+    setInputValue(event.target.value);
+  };
 
   const getInputValues = async () => {
     try {
@@ -34,29 +34,27 @@ export const Home = () => {
       console.error('エラー', error);
     }
   };
-  // console.log('bbb', comments); //コンソールした
 
   // useEffect(() => {
   //   getInputValues();
   // }, []);
 
   //ポストを押したときに走る処理
-  const handleClick = async (inputValue: string) => {
-    if (inputValue === '') {
-      alert('コメントを入力してください');
-      return;
-    }
+  const handleClick = async () => {
     // const { inputValue } = event;
     //入力欄に書いていた内容がinputValue
-    await axios.put('http://localhost:3001/add', { data: {inputValue}}).then((response) => {
-      const newInputArray: CommentType[]  = 
-      setComments(newInputArray)
-    })
-    console.log('aaaaa')
+    // console.log('inputValue', inputValue);
+    await axios.post('http://localhost:3001/add', { data: inputValue })
+    // .then((response) =>
+      // {const newInputArray: CommentType[]  = comments.filter((comment) => {comment.id})
+      // setComments(newInputArray)
+      // console.log('aaaaa', { data: { inputValue } })
+    // );
+    
+    getInputValues().then((response) => {
+      return response;
+    });
 
-    .then((response) => {
-
-    })
     // , {
     //   method: 'POST',
     //   headers: {
@@ -65,7 +63,7 @@ export const Home = () => {
     //   body: JSON.stringify({ inputValue }),
     // }
     // const data = await response
-    
+
     // .then((response) => {
     //   const comment = response;
     //   setComments([...comments]);
@@ -74,20 +72,24 @@ export const Home = () => {
     // .catch((response) => {
     //   console.log('エラー！', response);
     // });
-    
+
     //書いてたテキストエリアの内容をテキストエリアから消す処理
+    if (inputValue === '') {
+      alert('コメントを入力してください');
+      return;
+    }
     let textareaForm = document.getElementById('form')! as HTMLInputElement;
     textareaForm.value = '';
     setInputValue('');
     console.log('fff', comments);
   };
-  
+
   //デリート処理
   const handleDelete = async (id: string) => {
-    
     await axios.delete('http://localhost:3001/delete', { data: { id } }).then((response) => {
-      const newCommentList = comments.filter((value) => value.id !== id);
-      setComments(newCommentList);
+      getInputValues();
+      // const newCommentList = comments.filter((value) => value.id !== id);
+      // setComments(newCommentList);
     });
   };
 
@@ -133,7 +135,7 @@ export const Home = () => {
         rows={10}
         cols={40}
         placeholder="コメントを入力して下さい"
-        // onChange={handleChange}
+        onChange={handleChange}
       ></InputText>
       <AddCommentButton onClick={handleClick}>ポスト</AddCommentButton>
     </Container>

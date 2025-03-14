@@ -122,15 +122,17 @@ font-size: 7px;
 position: relative;
 left: 89%;
 top: 45%;
-border: 0.5px solid #ba2636;
-background: #c9171e;
-color: #fff;
+border: 1.4px solid #ba2636;
+background: #f2a0a1;
+color: #a22041;
+font-weight: bold;
 border-radius: 5px;
 cursor: pointer;
 &:hover {
-    background: #fff;
-    color: #ba2636;
-    transition: 0.2s;
+    background: #ba2636;
+    color: #fff;
+    font-weight: bold;
+    transition: 0.3s;
     font-weight: bold;
 `;
 const EditButton = styled.button`
@@ -140,7 +142,7 @@ font-size: 7px;
 position: relative;
 left: 89%;
 top: 45%;
-border: 0.5px solid #9ea1a3;
+border: 1.4px solid #7b7c7d;
 background: #c0c6c9;
 color: #000;
 border-radius: 5px;
@@ -148,7 +150,7 @@ cursor: pointer;
 &:hover {
     background: #7b7c7d;
     color: #fff;
-    transition: 0.2s;
+    transition: 0.3s;
     font-weight: bold;
 `;
 
@@ -179,7 +181,7 @@ cursor: pointer;
 &:hover {
     background: #7b7c7d;
     color: #fff;
-    transition: 0.2s;
+    transition: 0.3s;
     font-weight: bold;
 `;
 export default Comment;
