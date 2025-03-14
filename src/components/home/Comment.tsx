@@ -21,6 +21,7 @@ type CommentProps = {
   setNewBody: React.Dispatch<SetStateAction<string>>;
   setComments: React.Dispatch<SetStateAction<Comment[]>>;
   comments: Comment[];
+  getInputValues: () => Promise<void>
 };
 
 export const Comment = ({
@@ -31,6 +32,7 @@ export const Comment = ({
   handleDelete,
   newBody,
   setNewBody,
+  getInputValues,
   setComments,
   comments,
 }: CommentProps) => {
@@ -41,23 +43,24 @@ export const Comment = ({
   //どのstateにidが入っているものがあるかはconsole.logして見つける
   //編集したい要素のidとcommentsの中にあるidが同じものを取り出して定数にいれる
   //取り出したidとinputValueが入っている要素のinputValueに編集してsetした値を代入する
-  const handleSave = async () => {
-    const editCommentName: string = 'a'
+  const handleSave = async (inputValue: string) => {
+    // const editCommentName: string = inputValue
     if (!isEdit) {
       return;
     }
     await axios
-      .put('http://localhost:3001/update', { data: { id: isEdit.id, inputValue: editCommentName } })
+      .put('http://localhost:3001/put', { data: { id: isEdit.id, inputValue: inputValue } })
       .then((response) => {
-        console.log(response.data);
-        const newArray = comments.map((c) => {
-          if (c.id === isEdit.id) {
-            c.inputValue = newBody;
-            return c;
-          }
-          return c;
-        });
-        setComments(newArray);
+        // console.log('レスポンスデータ',response.data);
+        // const newArray = comments.map((c) => {
+        //   if (c.id === isEdit.id) {
+        //     c.inputValue = newBody;
+        //     return c;
+        //   }
+        //   return c;
+        // });
+        // setComments(newArray);
+        getInputValues()
         setIsEdit(null);
             });
     };
@@ -76,7 +79,7 @@ export const Comment = ({
           <SEditButton
             onClick={() => {
               setIsEdit(null);
-              handleSave();
+              handleSave(newBody);
             }}
           >
             {'確定'}

@@ -41,16 +41,20 @@ export const Home = () => {
 
   //ポストを押したときに走る処理
   const handleClick = async () => {
+    if (inputValue === '') {
+      alert('コメントを入力してください');
+      return;
+    }
     // const { inputValue } = event;
     //入力欄に書いていた内容がinputValue
     // console.log('inputValue', inputValue);
-    await axios.post('http://localhost:3001/add', { data: inputValue })
+    await axios.post('http://localhost:3001/add', { data: inputValue });
     // .then((response) =>
-      // {const newInputArray: CommentType[]  = comments.filter((comment) => {comment.id})
-      // setComments(newInputArray)
-      // console.log('aaaaa', { data: { inputValue } })
+    // {const newInputArray: CommentType[]  = comments.filter((comment) => {comment.id})
+    // setComments(newInputArray)
+    // console.log('aaaaa', { data: { inputValue } })
     // );
-    
+
     getInputValues().then((response) => {
       return response;
     });
@@ -74,14 +78,9 @@ export const Home = () => {
     // });
 
     //書いてたテキストエリアの内容をテキストエリアから消す処理
-    if (inputValue === '') {
-      alert('コメントを入力してください');
-      return;
-    }
     let textareaForm = document.getElementById('form')! as HTMLInputElement;
     textareaForm.value = '';
     setInputValue('');
-    console.log('fff', comments);
   };
 
   //デリート処理
@@ -125,6 +124,7 @@ export const Home = () => {
             setComments={setComments}
             comments={comments}
             id={c.id}
+            getInputValues={getInputValues}
           />
         ))}
       {/* : (
@@ -144,7 +144,7 @@ export const Home = () => {
 
 const Container = styled.div`
   width: 75%;
-  height: 100vh;
+  height: 99.4vh;
   border: 2px solid gray;
   background: #ddd;
   margin-left: auto;

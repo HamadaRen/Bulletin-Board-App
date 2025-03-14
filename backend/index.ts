@@ -78,10 +78,14 @@ app.put('/put', (req: Request, res: Response) => {
   console.log('putリクエストを受け取りました');
 
   const requestBody: any = req.body;
-  const inputId = requestBody.id as string;
-  const newInputValue = requestBody.inputValue as string;
+  const inputId = requestBody.data.id as string;
+  const newInputValue = requestBody.data.inputValue as string;
   const updateQuery = `UPDATE comment SET inputValue=? WHERE id = "${inputId}"`;
   connection.query(updateQuery, [newInputValue], (error: string, result: string) => {
+    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', req)
+    // console.log('//////////////////////////////////////////////////////', requestBody)
+    console.log('------------------------------------------------------', inputId)
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$', newInputValue)
     if(error){
       console.error("MySQLエラー", error);
       return res.status(500).json({ error: 'comment!の更新に失敗しました'});
